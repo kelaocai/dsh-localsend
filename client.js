@@ -57,6 +57,11 @@ window.__ModuleLoader__.load({
       'toast.noPicker': '当前平台没有原生文件选择器，请用拖拽或直接输入路径',
       'toast.copied': '已复制路径',
       'toast.copyFailed': '复制失败，请手动复制',
+      'help.title': '安装手机客户端',
+      'help.desc': '在手机上装好 LocalSend，和本机连同一个 Wi-Fi，即可互相发现并收发文件。',
+      'help.website': '官网',
+      'help.releases': 'GitHub Releases',
+      'help.stores': 'iOS：App Store 搜「LocalSend」；Android：Google Play / F-Droid 搜「LocalSend」。',
     }
 
     const EN = {
@@ -99,6 +104,11 @@ window.__ModuleLoader__.load({
       'toast.noPicker': 'No native file picker on this platform; drop files or type a path instead.',
       'toast.copied': 'Path copied',
       'toast.copyFailed': 'Copy failed; copy manually',
+      'help.title': 'Install the mobile app',
+      'help.desc': 'Install LocalSend on your phone and join the same Wi-Fi; the two can then discover and exchange files.',
+      'help.website': 'Website',
+      'help.releases': 'GitHub Releases',
+      'help.stores': 'iOS: search "LocalSend" on the App Store; Android: search "LocalSend" on Google Play / F-Droid.',
     }
 
     const STYLE = `
@@ -108,11 +118,17 @@ window.__ModuleLoader__.load({
 .ls-title{margin:0;font-size:15px;font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
 .ls-title svg{color:var(--dsw-alias-brand-primary)}
 .ls-hint{margin:0;font-size:11px;line-height:1.4;color:var(--dsw-alias-label-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ls-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:14px 20px 18px;display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);grid-template-areas:"devices receiver" "devices send";gap:16px;align-items:start}
+.ls-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:14px 20px 18px;display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);grid-template-areas:"devices receiver" "devices send" "help help";gap:16px;align-items:start}
 .ls-card-receiver,.ls-card-devices,.ls-card-send{min-width:0}
 .ls-card-receiver{grid-area:receiver}
 .ls-card-devices{grid-area:devices}
 .ls-card-send{grid-area:send}
+.ls-card-help{grid-area:help;min-width:0}
+.ls-help-desc{margin:0;padding:2px 14px 0;font-size:12px;line-height:1.5;color:var(--dsw-alias-label-secondary)}
+.ls-help-links{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px 2px}
+.ls-help-link{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:7px;border:0.5px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-brand-primary);font-size:12px;text-decoration:none;cursor:pointer}
+.ls-help-link:hover{background:var(--dsw-alias-bg-layer-2);border-color:var(--dsw-alias-border-l2)}
+.ls-help-note{margin:0;padding:8px 14px 12px;font-size:11px;line-height:1.5;color:var(--dsw-alias-label-secondary)}
 .ls-card{border:0.5px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1);overflow:hidden}
 .ls-card-head{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--dsw-alias-border-l1)}
 .ls-card-title{margin:0;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
@@ -302,6 +318,12 @@ window.__ModuleLoader__.load({
     const IconCopy = ({ size = 14 }) => icon(size, [
       h('rect', { key: 'a', x: 9, y: 9, width: 11, height: 11, rx: 2 }),
       h('path', { key: 'b', d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' }),
+    ])
+
+    const IconHelp = ({ size = 15 }) => icon(size, [
+      h('circle', { key: 'a', cx: 12, cy: 12, r: 9 }),
+      h('path', { key: 'b', d: 'M12 11v5' }),
+      h('path', { key: 'c', d: 'M12 8h.01' }),
     ])
 
     function deviceIcon(type) {
@@ -777,6 +799,34 @@ window.__ModuleLoader__.load({
               ),
             ),
             h('p', { className: 'ls-pin-hint' }, t('send.pinHint')),
+          ),
+          /* help card */
+          h(
+            'section',
+            { className: 'ls-card ls-card-help' },
+            h(
+              'div',
+              { className: 'ls-card-head' },
+              h('h2', { className: 'ls-card-title' }, h(IconHelp, { size: 15 }), t('help.title')),
+            ),
+            h('p', { className: 'ls-help-desc' }, t('help.desc')),
+            h(
+              'div',
+              { className: 'ls-help-links' },
+              h(
+                'a',
+                { className: 'ls-help-link', href: 'https://localsend.org', target: '_blank', rel: 'noreferrer' },
+                t('help.website'),
+                ' ↗',
+              ),
+              h(
+                'a',
+                { className: 'ls-help-link', href: 'https://github.com/localsend/localsend/releases/latest', target: '_blank', rel: 'noreferrer' },
+                t('help.releases'),
+                ' ↗',
+              ),
+            ),
+            h('p', { className: 'ls-help-note' }, t('help.stores')),
           ),
         ),
       )
