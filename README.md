@@ -4,6 +4,14 @@
 
 > 这不是把 LocalSend App 本身做成插件，而是把它的**局域网传文件能力**做成了一个 DSH 工具（协议直连、零运行时依赖的纯 Node 实现）。
 
+## 致谢 · 上游 LocalSend
+
+本插件实现的是 [LocalSend](https://github.com/localsend/localsend) 的局域网传输协议，与官方客户端（手机 / 电脑）完全互通：插件既能发现并向它们发文件，也能作为接收端让它们把文件发进本机。感谢 LocalSend 团队的开源工作。
+
+- **源码仓库**：[github.com/localsend/localsend](https://github.com/localsend/localsend)
+- **协议文档**：[github.com/localsend/protocol](https://github.com/localsend/protocol)
+- **下载安装版**（与插件互通）：官方站 <https://localsend.org> 或 [GitHub Releases](https://github.com/localsend/localsend/releases/latest) 提供 iOS / Android / macOS / Windows / Linux 各端安装包与源码打包。
+
 ## 功能
 
 插件有两半：
@@ -44,7 +52,7 @@ https://cdn.jsdelivr.net/gh/kelaocai/dsh-localsend@main/market/index.json
 npm install @kelaocai/dsh-localsend
 ```
 
-或安装指定版本 `@kelaocai/dsh-localsend@0.1.0`。
+或安装指定版本 `@kelaocai/dsh-localsend@0.1.1`。
 
 ### 方式三：本地 link（开发用）
 
