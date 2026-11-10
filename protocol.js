@@ -595,20 +595,21 @@ function pickFilesLinux(multiple) {
 /**
  * Ask the OS file manager to open a file or its containing folder.
  * @param {string} target absolute path of the file.
- * @param {'open'|'reveal'|'folder'} [mode] open the file, reveal it, or open its folder.
+ * @param {'open'|'reveal'} [mode] open the target, or reveal it (selected in its folder).
  */
 export function openInFileManager(target, mode = 'open') {
   let command
   let args
   if (process.platform === 'darwin') {
     command = 'open'
-    args = mode === 'reveal' ? ['-R', target] : mode === 'folder' ? [path.dirname(target)] : [target]
+    // `open <dir>` shows the directory; `open -R <file>` shows it selected in Finder.
+    args = mode === 'reveal' ? ['-R', target] : [target]
   } else if (process.platform === 'win32') {
     command = 'explorer.exe'
-    args = mode === 'reveal' ? [`/select,${target}`] : mode === 'folder' ? [path.dirname(target)] : [target]
+    args = mode === 'reveal' ? [`/select,${target}`] : [target]
   } else {
     command = 'xdg-open'
-    args = [mode === 'folder' ? path.dirname(target) : target]
+    args = [target]
   }
   const child = spawn(command, args, { detached: true, stdio: 'ignore' })
   child.on('error', () => {})

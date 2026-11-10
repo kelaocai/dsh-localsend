@@ -41,10 +41,10 @@ https://cdn.jsdelivr.net/gh/kelaocai/dsh-localsend@main/market/index.json
 ### 方式二：npm
 
 ```bash
-npm install dsh-localsend
+npm install @kelaocai/dsh-localsend
 ```
 
-或安装指定版本 `dsh-localsend@0.1.0`。
+或安装指定版本 `@kelaocai/dsh-localsend@0.1.0`。
 
 ### 方式三：本地 link（开发用）
 
@@ -116,3 +116,15 @@ node --test test/*.mjs
 ```
 
 `protocol.js` 不依赖 DSH，可单独在任何 Node ≥ 20 环境测试（用到 `crypto.X509Certificate`）。
+
+## 发布
+
+包名为 `@kelaocai/dsh-localsend`，已固定公开发布到 npm 官方 registry。
+
+```bash
+npm run release:check  # 测试并预览打包内容
+npm run release        # 检查通过后发布，按提示完成安全密钥验证
+```
+
+后续版本先更新 `package.json` 的版本号；已发布的版本号不能重复使用。
+本地交互发布可能需要浏览器验证，普通登录不会取消发布时的双因素认证。

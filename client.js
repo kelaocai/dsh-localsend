@@ -7,7 +7,7 @@
  * and never imports a Harness Client package: controls render from theme tokens.
  */
 window.__ModuleLoader__.load({
-  id: 'dsh-localsend',
+  id: '@kelaocai/dsh-localsend',
   factory(require) {
     const React = require('react')
     const h = React.createElement
@@ -564,7 +564,7 @@ window.__ModuleLoader__.load({
                         type: 'button',
                         className: 'ls-btn',
                         title: t('receiver.openFolder'),
-                        onClick: () => openPath(receiver.destination, 'folder'),
+                        onClick: () => openPath(receiver.destination, 'open'),
                       },
                       h(IconFolder, { size: 14 }),
                       t('receiver.openFolder'),

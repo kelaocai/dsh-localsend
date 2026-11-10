@@ -321,7 +321,7 @@ export async function apply(ctx, config) {
     if (!allowed) {
       return sendJson(res, 403, { ok: false, error: 'path is outside the receive directory' })
     }
-    openInFileManager(resolved, body?.mode === 'reveal' || body?.mode === 'folder' ? body.mode : 'open')
+    openInFileManager(resolved, body?.mode === 'reveal' ? 'reveal' : 'open')
     sendJson(res, 200, { ok: true })
   })
 

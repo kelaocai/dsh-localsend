@@ -29,7 +29,7 @@
   },
   "plugins": [
     {
-      "name": "dsh-localsend",
+      "name": "@kelaocai/dsh-localsend",
       "title": {
         "en": "LocalSend",
         "zh": "LocalSend 局域网传文件"

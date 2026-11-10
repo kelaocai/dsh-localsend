@@ -2,5 +2,5 @@
 # 默认配置为空；别名 / 端口 / 接收目录等由插件在运行时兜底（可在此处覆盖）。
 - insert:
     - id: localsend
-      name: dsh-localsend
+      name: "@kelaocai/dsh-localsend"
       config: {}
