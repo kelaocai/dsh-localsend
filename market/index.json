@@ -1,0 +1,74 @@
+{
+  "format": 1,
+  "title": {
+    "en": "kelaocai DSH plugins",
+    "zh": "kelaocai 的 DSH 插件"
+  },
+  "description": {
+    "en": "Market index for kelaocai's DeepSeek Harness plugins.",
+    "zh": "kelaocai 的 DeepSeek Harness 插件索引。"
+  },
+  "metadata": {
+    "categories": {
+      "file-transfer": {
+        "title": {
+          "en": "File transfer",
+          "zh": "文件传输"
+        }
+      }
+    },
+    "labels": {
+      "lan": {
+        "title": {
+          "en": "LAN",
+          "zh": "局域网"
+        }
+      }
+    },
+    "sortKeys": {}
+  },
+  "plugins": [
+    {
+      "name": "dsh-localsend",
+      "title": {
+        "en": "LocalSend",
+        "zh": "LocalSend 局域网传文件"
+      },
+      "description": {
+        "en": "Discover and exchange files with LocalSend devices over the local network, straight from the agent — no cloud upload.",
+        "zh": "在 DeepSeek Harness 里用 LocalSend 协议发现局域网设备并收发文件，全程不经云端。"
+      },
+      "icon": "https://raw.githubusercontent.com/kelaocai/dsh-localsend/main/icon.svg",
+      "author": "kelaocai",
+      "homepage": "https://github.com/kelaocai/dsh-localsend#readme",
+      "repository": {
+        "url": "https://github.com/kelaocai/dsh-localsend"
+      },
+      "metadata": {
+        "category": "file-transfer",
+        "keywords": [
+          "localsend",
+          "lan",
+          "file-transfer",
+          "airdrop"
+        ],
+        "labels": [
+          "lan"
+        ],
+        "sortKeys": {}
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 0,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.1"
+          }
+        }
+      ]
+    }
+  ]
+}
