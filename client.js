@@ -108,7 +108,11 @@ window.__ModuleLoader__.load({
 .ls-title{margin:0;font-size:15px;font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
 .ls-title svg{color:var(--dsw-alias-brand-primary)}
 .ls-hint{margin:0;font-size:11px;line-height:1.4;color:var(--dsw-alias-label-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ls-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:14px 20px 18px;display:flex;flex-direction:column;gap:16px}
+.ls-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:14px 20px 18px;display:grid;grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr);grid-template-areas:"devices receiver" "devices send";gap:16px;align-items:start}
+.ls-card-receiver,.ls-card-devices,.ls-card-send{min-width:0}
+.ls-card-receiver{grid-area:receiver}
+.ls-card-devices{grid-area:devices}
+.ls-card-send{grid-area:send}
 .ls-card{border:0.5px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1);overflow:hidden}
 .ls-card-head{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--dsw-alias-border-l1)}
 .ls-card-title{margin:0;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
@@ -543,7 +547,7 @@ window.__ModuleLoader__.load({
           /* receiver card */
           h(
             'section',
-            { className: 'ls-card' },
+            { className: 'ls-card ls-card-receiver' },
             h(
               'div',
               { className: 'ls-card-head' },
@@ -652,7 +656,7 @@ window.__ModuleLoader__.load({
           /* devices card */
           h(
             'section',
-            { className: 'ls-card' },
+            { className: 'ls-card ls-card-devices' },
             h(
               'div',
               { className: 'ls-card-head' },
@@ -701,7 +705,7 @@ window.__ModuleLoader__.load({
           /* send card */
           h(
             'section',
-            { className: 'ls-card' },
+            { className: 'ls-card ls-card-send' },
             h(
               'div',
               { className: 'ls-card-head' },
