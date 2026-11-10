@@ -12,6 +12,9 @@
 - **协议文档**：[github.com/localsend/protocol](https://github.com/localsend/protocol)
 - **下载安装版**（与插件互通）：官方站 <https://localsend.org> 或 [GitHub Releases](https://github.com/localsend/localsend/releases/latest) 提供 iOS / Android / macOS / Windows / Linux 各端安装包与源码打包。
 
+<img width="1536" height="1024" alt="ChatGPT 图像 2026年11月11日 02_12_17" src="https://github.com/user-attachments/assets/b6ec0744-6871-4609-b19f-72586557c6e6" />
+
+
 ## 功能
 
 插件有两半：
