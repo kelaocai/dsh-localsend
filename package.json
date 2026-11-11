@@ -1,6 +1,6 @@
 {
   "name": "@kelaocai/dsh-localsend",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "在 DeepSeek Harness 里用 LocalSend 协议（v2）在局域网内发现设备、收发文件。让 Agent 直接发现手机/其他电脑上的 LocalSend 并互相传文件，无需云端上传。Send and receive files over the local network via the LocalSend protocol.",
   "keywords": [
     "dsh-plugin",

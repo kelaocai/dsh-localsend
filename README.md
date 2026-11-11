@@ -55,7 +55,7 @@ https://cdn.jsdelivr.net/gh/kelaocai/dsh-localsend@main/market/index.json
 npm install @kelaocai/dsh-localsend
 ```
 
-或安装指定版本 `@kelaocai/dsh-localsend@0.1.3`。
+或安装指定版本 `@kelaocai/dsh-localsend@0.1.4`。
 
 ### 方式三：本地 link（开发用）
 
