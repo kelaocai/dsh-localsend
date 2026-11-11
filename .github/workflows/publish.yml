@@ -1,0 +1,30 @@
+name: Publish to npm
+
+# Publishes the package when a GitHub Release is published (or manually from
+# the Actions tab). Uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret
+# needed, no token to expire. One-time setup required on npmjs.com:
+# package "@kelaocai/dsh-localsend" → Settings → Trusted Publisher → GitHub Actions
+# → Organization/user: kelaocai, Repository: dsh-localsend,
+#   Workflow filename: publish.yml
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing requires npm CLI >= 11.5.1
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@^11.5.1
+      - name: Publish package
+        run: npm publish --provenance --access public
