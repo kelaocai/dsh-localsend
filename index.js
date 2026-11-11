@@ -185,6 +185,7 @@ export async function apply(ctx, config) {
   const stageDir = path.join(os.tmpdir(), 'localsend-stage')
   const staged = new Set()
   let receiver = null
+  let sendProgress = null
 
   const cleanupStaged = async (files) => {
     for (const file of files) {
@@ -279,13 +280,28 @@ export async function apply(ctx, config) {
     if (!target || !target.ip) {
       return sendJson(res, 400, { ok: false, error: 'a device with an ip address is required' })
     }
+    sendProgress = { active: true, sentBytes: 0, totalBytes: 0, percent: 0, currentFile: null, fileIndex: 0, totalFiles: body.files.length }
     try {
-      const result = await sendFiles({ device: target, files: body.files, pin: body.pin, self: selfInfo(cfg) })
+      const result = await sendFiles({
+        device: target,
+        files: body.files,
+        pin: body.pin,
+        self: selfInfo(cfg),
+        onProgress: (p) => {
+          sendProgress = { active: true, ...p }
+        },
+      })
       await cleanupStaged(body.files)
       sendJson(res, 200, { ok: true, ...result })
     } catch (error) {
       sendJson(res, 400, { ok: false, error: error?.message ?? String(error) })
+    } finally {
+      sendProgress = null
     }
+  })
+
+  registerRoute(ctx, '/localsend/send-progress', 'GET', async (_req, res) => {
+    sendJson(res, 200, sendProgress ?? { active: false })
   })
 
   registerRoute(ctx, '/localsend/pick-files', 'POST', async (_req, res) => {

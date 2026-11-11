@@ -183,6 +183,10 @@ window.__ModuleLoader__.load({
 .ls-row{display:flex;align-items:center;gap:8px}
 .ls-grow{flex:1 1 auto;min-width:0}
 .ls-send-foot{display:flex;align-items:center;gap:8px;padding-top:2px}
+.ls-progress{display:flex;align-items:center;gap:8px;padding:10px 14px 0}
+.ls-progress-track{flex:1 1 auto;min-width:0;height:6px;border-radius:999px;background:var(--dsw-alias-bg-layer-2);overflow:hidden}
+.ls-progress-fill{height:100%;border-radius:999px;background:var(--dsw-alias-brand-primary);transition:width .15s ease}
+.ls-progress-text{flex:none;font-size:11px;color:var(--dsw-alias-label-secondary);font-variant-numeric:tabular-nums;white-space:nowrap}
 .ls-pin-field{display:flex;align-items:center;gap:7px;flex:none}
 .ls-pin-label{font-size:11px;color:var(--dsw-alias-label-secondary);white-space:nowrap}
 .ls-pin{width:110px;flex:none}
@@ -360,6 +364,7 @@ window.__ModuleLoader__.load({
       const [busy, setBusy] = useState(false)
       const [over, setOver] = useState(false)
       const [toast, setToast] = useState(null)
+      const [progress, setProgress] = useState(null) // {active, percent, currentFile, sentBytes, totalBytes, fileIndex, totalFiles}
 
       const alive = useRef(true)
       useEffect(() => () => { alive.current = false }, [])
@@ -512,6 +517,16 @@ window.__ModuleLoader__.load({
       const send = useCallback(async () => {
         if (!selectedDevice || files.length === 0) return
         setBusy(true)
+        setProgress({ active: true, percent: 0, currentFile: null, fileIndex: 0, totalFiles: files.length })
+        const poll = window.setInterval(async () => {
+          try {
+            const p = await getJSON('/localsend/send-progress')
+            if (!alive.current) return
+            setProgress(p && p.active ? p : null)
+          } catch {
+            /* keep the last progress on transient poll errors */
+          }
+        }, 200)
         try {
           const data = await postJSON('/localsend/send', {
             device: selectedDevice,
@@ -525,7 +540,9 @@ window.__ModuleLoader__.load({
         } catch (error) {
           showToast('error', `${t('send.failed')}: ${error.message}`)
         } finally {
+          window.clearInterval(poll)
           setBusy(false)
+          setProgress(null)
         }
       }, [selectedDevice, files, pin, showToast, t])
 
@@ -769,6 +786,18 @@ window.__ModuleLoader__.load({
               }),
               h('button', { type: 'submit', className: 'ls-btn', disabled: draft.trim() === '' }, h(IconPlus, { size: 14 }), t('send.add')),
             ),
+            progress && progress.active
+              ? h(
+                  'div',
+                  { className: 'ls-progress' },
+                  h(
+                    'div',
+                    { className: 'ls-progress-track' },
+                    h('div', { className: 'ls-progress-fill', style: { width: `${progress.percent}%` } }),
+                  ),
+                  h('span', { className: 'ls-progress-text' }, `${progress.currentFile ? progress.currentFile + ' · ' : ''}${progress.percent}%`),
+                )
+              : null,
             h(
               'div',
               { className: 'ls-send-foot', style: { padding: '0 14px 6px' } },

@@ -305,8 +305,8 @@ function requestJson(baseUrl, method, urlPath, body) {
   })
 }
 
-/** Stream one local file to the receiver's upload endpoint. */
-function uploadFileBinary(baseUrl, urlPath, filePath, size) {
+/** Stream one local file to the receiver's upload endpoint, reporting progress. */
+function uploadFileBinary(baseUrl, urlPath, filePath, size, onProgress) {
   return new Promise((resolve, reject) => {
     const secure = baseUrl.startsWith('https://')
     const lib = secure ? https : http
@@ -327,6 +327,11 @@ function uploadFileBinary(baseUrl, urlPath, filePath, size) {
     )
     req.on('error', reject)
     const stream = fs.createReadStream(filePath)
+    let sent = 0
+    stream.on('data', (chunk) => {
+      sent += chunk.length
+      onProgress?.(sent, size)
+    })
     stream.on('error', reject)
     stream.pipe(req)
   })
@@ -450,8 +455,9 @@ export function discoverDevices({ self = null, timeoutMs = 3000, port = DEFAULT_
  * @param {string[]} opts.files    absolute (or resolvable) paths to send
  * @param {string}   [opts.pin]    receiver PIN, if required
  * @param {object}   [opts.self]   our own info object to embed in the request
+ * @param {function} [opts.onProgress] called as bytes stream, with {sentBytes, totalBytes, percent, currentFile, fileIndex, totalFiles}
  */
-export async function sendFiles({ device, files, pin, self }) {
+export async function sendFiles({ device, files, pin, self, onProgress }) {
   if (!device || !device.ip) throw new Error('a device with an ip address is required')
   const baseUrl = baseUrlOf(device)
 
@@ -497,16 +503,30 @@ export async function sendFiles({ device, files, pin, self }) {
   const sessionId = prep.json.sessionId
   const tokens = prep.json.files ?? {}
   const sent = []
+  const totalBytes = order.reduce((sum, f) => sum + f.size, 0)
+  const totalFiles = order.length
+  let sentBytes = 0
   try {
-    for (const { id, abs, fileName, size } of order) {
+    for (let i = 0; i < order.length; i++) {
+      const { id, abs, fileName, size } = order[i]
       const token = tokens[id]
       if (!token) continue // the receiver declined this specific file
       const query = `?sessionId=${encodeURIComponent(sessionId)}&fileId=${encodeURIComponent(id)}&token=${encodeURIComponent(token)}`
-      const up = await uploadFileBinary(baseUrl, `${API_PREFIX}/upload${query}`, abs, size)
+      const up = await uploadFileBinary(baseUrl, `${API_PREFIX}/upload${query}`, abs, size, (fileSent) => {
+        onProgress?.({
+          sentBytes: sentBytes + fileSent,
+          totalBytes,
+          currentFile: fileName,
+          fileIndex: i,
+          totalFiles,
+          percent: totalBytes > 0 ? Math.round(((sentBytes + fileSent) / totalBytes) * 100) : 100,
+        })
+      })
       if (up.status !== 200 && up.status !== 204) {
         throw new Error(`upload of "${fileName}" failed (HTTP ${up.status})`)
       }
       sent.push(fileName)
+      sentBytes += size
     }
   } catch (error) {
     await requestJson(baseUrl, 'POST', `${API_PREFIX}/cancel?sessionId=${encodeURIComponent(sessionId)}`).catch(() => {})

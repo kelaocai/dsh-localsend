@@ -77,6 +77,38 @@ test('sendFiles uploads files into a LocalSendReceiver end-to-end', async () => 
   }
 })
 
+test('sendFiles reports upload progress through to 100%', async () => {
+  const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'localsend-prog-'))
+  const { key, cert, fingerprint } = identity
+  const receiver = new LocalSendReceiver({ alias: 'Prog', port: 0, destination: dest, key, cert })
+  await receiver.start()
+  try {
+    const src = await fsp.mkdtemp(path.join(os.tmpdir(), 'localsend-prog-src-'))
+    const filePath = path.join(src, 'big.bin')
+    const size = 256 * 1024
+    await fsp.writeFile(filePath, crypto.randomBytes(size))
+
+    const events = []
+    const result = await sendFiles({
+      device: { ip: '127.0.0.1', port: receiver.actualPort, protocol: 'https', alias: 'Prog' },
+      files: [filePath],
+      self: makeInfo({ alias: 'Sender', port: 53317, fingerprint }),
+      onProgress: (p) => events.push(p),
+    })
+
+    assert.equal(result.ok, true)
+    assert.ok(events.length > 0, 'expected progress events')
+    const last = events[events.length - 1]
+    assert.equal(last.sentBytes, size)
+    assert.equal(last.totalBytes, size)
+    assert.equal(last.percent, 100)
+    assert.equal(last.currentFile, 'big.bin')
+    for (const p of events) assert.ok(Number.isInteger(p.percent) && p.percent >= 0 && p.percent <= 100)
+  } finally {
+    await receiver.stop()
+  }
+})
+
 test('receiver reports running status and stops cleanly', async () => {
   const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'localsend-status-'))
   const { key, cert } = identity
